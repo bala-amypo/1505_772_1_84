@@ -21,8 +21,9 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
 
         VehicleEntity v = entry.getVehicle();
 
-        if (v == null || v.getActive() == null || !v.getActive()) {
-            throw new IllegalArgumentException("Vehicle must be active");
+        if (v == null) {
+        
+            throw new IllegalArgumentException("Vehicle is required");
         }
 
         if (entry.getServiceDate().isAfter(LocalDate.now())) {
