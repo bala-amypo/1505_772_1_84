@@ -2,10 +2,10 @@ package com.example.demo.service;
 
 import com.example.demo.model.ServicePartEntity;
 import com.example.demo.repository.ServicePartRepository;
-
+import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
-
+@Service
 public class ServicePartServiceImpl implements ServicePartService {
 
     private final ServicePartRepository repo;
