@@ -1,46 +1,85 @@
-package com.example.demo.service;
+package com.example.demo.model;
 
+import jakarta.persistence.*;
+import java.time.Instant;
 
-import com.example.demo.model.ServiceEntryEntity;
-import com.example.demo.model.VehicleEntity;
-import com.example.demo.repository.ServiceEntryRepository;
-import java.time.LocalDate;
-import java.util.List;
+@Entity
+@Table(name = "vehicle", uniqueConstraints = @UniqueConstraint(columnNames = "vin"))
+public class VehicleEntity {
 
-public class ServiceEntryServiceImpl implements ServiceEntryService {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private final ServiceEntryRepository repo;
+    @Column(nullable = false, unique = true)
+    private String vin;
 
-    public ServiceEntryServiceImpl(ServiceEntryRepository repo) {
-        this.repo = repo;
+    private String make;
+    private String model;
+    private Integer year;
+
+    @Column(nullable = false)
+    private Long ownerId;
+
+    @Column(nullable = false)
+    private Boolean active = true;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
+
+    // ---------- ADD / CONFIRM THESE METHODS ----------
+
+    public Boolean getActive() {
+        return active;
     }
 
-    public ServiceEntryEntity createServiceEntry(ServiceEntryEntity entry) {
-        VehicleEntity v = entry.getVehicle();
-
-        if (!v.getActive())
-            throw new IllegalArgumentException("active vehicles");
-
-        if (entry.getServiceDate().isAfter(LocalDate.now()))
-            throw new IllegalArgumentException("future");
-
-        List<ServiceEntryEntity> last = repo.findTopByVehicleOrderByOdometerReadingDesc(v);
-        if (!last.isEmpty() && entry.getOdometerReading() < last.get(0).getOdometerReading())
-            throw new IllegalArgumentException(">=");
-
-        return repo.save(entry);
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
-    public ServiceEntryEntity getEntryById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Entry not found"));
+    // ---------- EXISTING GETTERS / SETTERS ----------
+
+    public Long getId() {
+        return id;
     }
 
-    public List<ServiceEntryEntity> getEntriesForVehicle(Long vehicleId) {
-        return repo.findByVehicleId(vehicleId);
+    public String getVin() {
+        return vin;
     }
 
-    public List<ServiceEntryEntity> getEntriesByGarage(Long garageId) {
-        return repo.findByGarageId(garageId);
+    public void setVin(String vin) {
+        this.vin = vin;
+    }
+
+    public String getMake() {
+        return make;
+    }
+
+    public void setMake(String make) {
+        this.make = make;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 }
