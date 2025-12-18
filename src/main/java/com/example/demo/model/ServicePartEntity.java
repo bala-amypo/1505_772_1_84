@@ -1,47 +1,35 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.Instant;
-import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Entity
-@Table(name = "service_entry")
-public class ServiceEntryEntity {
+@Table(name = "service_part")
+public class ServicePartEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(optional = false)
-    private VehicleEntity vehicle;
+    private ServiceEntryEntity serviceEntry;
 
-    @ManyToOne(optional = false)
-    private GarageEntity garage;
-
-    private String serviceType;
-
-    @Column(nullable = false)
-    private LocalDate serviceDate;
+    private String partName;
+    private String partNumber;
+    private BigDecimal cost;
 
     @Column(nullable = false)
-    private Integer odometerReading;
-
-    private String description;
-
-    @Column(nullable = false, updatable = false)
-    private Instant recordedAt = Instant.now();
+    private Integer quantity;
 
     public Long getId() { return id; }
-    public VehicleEntity getVehicle() { return vehicle; }
-    public void setVehicle(VehicleEntity vehicle) { this.vehicle = vehicle; }
-    public GarageEntity getGarage() { return garage; }
-    public void setGarage(GarageEntity garage) { this.garage = garage; }
-    public String getServiceType() { return serviceType; }
-    public void setServiceType(String serviceType) { this.serviceType = serviceType; }
-    public LocalDate getServiceDate() { return serviceDate; }
-    public void setServiceDate(LocalDate serviceDate) { this.serviceDate = serviceDate; }
-    public Integer getOdometerReading() { return odometerReading; }
-    public void setOdometerReading(Integer odometerReading) { this.odometerReading = odometerReading; }
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public ServiceEntryEntity getServiceEntry() { return serviceEntry; }
+    public void setServiceEntry(ServiceEntryEntity serviceEntry) { this.serviceEntry = serviceEntry; }
+    public String getPartName() { return partName; }
+    public void setPartName(String partName) { this.partName = partName; }
+    public String getPartNumber() { return partNumber; }
+    public void setPartNumber(String partNumber) { this.partNumber = partNumber; }
+    public BigDecimal getCost() { return cost; }
+    public void setCost(BigDecimal cost) { this.cost = cost; }
+    public Integer getQuantity() { return quantity; }
+    public void setQuantity(Integer quantity) { this.quantity = quantity; }
 }
