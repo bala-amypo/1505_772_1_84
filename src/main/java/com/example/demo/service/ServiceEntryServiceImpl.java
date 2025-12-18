@@ -3,11 +3,11 @@ package com.example.demo.service;
 import com.example.demo.model.ServiceEntryEntity;
 import com.example.demo.model.VehicleEntity;
 import com.example.demo.repository.ServiceEntryRepository;
-
+import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
-
+@Service
 public class ServiceEntryServiceImpl implements ServiceEntryService {
 
     private final ServiceEntryRepository repo;
@@ -22,7 +22,7 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
         VehicleEntity v = entry.getVehicle();
 
         if (v == null) {
-        
+
             throw new IllegalArgumentException("Vehicle is required");
         }
 
