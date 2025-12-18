@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.EntityNotFoundException;
 import com.example.demo.model.ServicePartEntity;
 import com.example.demo.repository.ServicePartRepository;
 import java.util.List;
