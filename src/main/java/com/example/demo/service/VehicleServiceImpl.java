@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.EntityNotFoundException;
+
 import com.example.demo.model.VehicleEntity;
 import com.example.demo.repository.VehicleRepository;
 import java.util.List;

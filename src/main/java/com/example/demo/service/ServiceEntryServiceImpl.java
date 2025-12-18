@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.EntityNotFoundException;
 import com.example.demo.model.ServiceEntryEntity;
 import com.example.demo.model.VehicleEntity;
 import com.example.demo.repository.ServiceEntryRepository;

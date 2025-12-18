@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.EntityNotFoundException;
+
 import com.example.demo.model.VerificationLogEntity;
 import com.example.demo.repository.VerificationLogRepository;
 import java.util.List;
