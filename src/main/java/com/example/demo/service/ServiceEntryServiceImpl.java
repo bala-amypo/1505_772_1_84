@@ -1,85 +1,60 @@
-package com.example.demo.model;
+package com.example.demo.service;
 
-import jakarta.persistence.*;
-import java.time.Instant;
+import com.example.demo.model.ServiceEntryEntity;
+import com.example.demo.model.VehicleEntity;
+import com.example.demo.repository.ServiceEntryRepository;
 
-@Entity
-@Table(name = "vehicle", uniqueConstraints = @UniqueConstraint(columnNames = "vin"))
-public class VehicleEntity {
+import java.time.LocalDate;
+import java.util.List;
+import java.util.NoSuchElementException;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ServiceEntryServiceImpl implements ServiceEntryService {
 
-    @Column(nullable = false, unique = true)
-    private String vin;
+    private final ServiceEntryRepository repo;
 
-    private String make;
-    private String model;
-    private Integer year;
-
-    @Column(nullable = false)
-    private Long ownerId;
-
-    @Column(nullable = false)
-    private Boolean active = true;
-
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt = Instant.now();
-
-    // ---------- ADD / CONFIRM THESE METHODS ----------
-
-    public Boolean getActive() {
-        return active;
+    public ServiceEntryServiceImpl(ServiceEntryRepository repo) {
+        this.repo = repo;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
+    @Override
+    public ServiceEntryEntity createServiceEntry(ServiceEntryEntity entry) {
+
+        VehicleEntity v = entry.getVehicle();
+
+        if (v == null || v.getActive() == null || !v.getActive()) {
+            throw new IllegalArgumentException("Vehicle must be active");
+        }
+
+        if (entry.getServiceDate().isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Service date cannot be in the future");
+        }
+
+        List<ServiceEntryEntity> last =
+                repo.findTopByVehicleOrderByOdometerReadingDesc(v);
+
+        if (!last.isEmpty() &&
+            entry.getOdometerReading() < last.get(0).getOdometerReading()) {
+            throw new IllegalArgumentException(
+                "Odometer reading must be greater than or equal to last service"
+            );
+        }
+
+        return repo.save(entry);
     }
 
-    // ---------- EXISTING GETTERS / SETTERS ----------
-
-    public Long getId() {
-        return id;
+    @Override
+    public ServiceEntryEntity getEntryById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Entry not found"));
     }
 
-    public String getVin() {
-        return vin;
+    @Override
+    public List<ServiceEntryEntity> getEntriesForVehicle(Long vehicleId) {
+        return repo.findByVehicleId(vehicleId);
     }
 
-    public void setVin(String vin) {
-        this.vin = vin;
-    }
-
-    public String getMake() {
-        return make;
-    }
-
-    public void setMake(String make) {
-        this.make = make;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
-    }
-
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    @Override
+    public List<ServiceEntryEntity> getEntriesByGarage(Long garageId) {
+        return repo.findByGarageId(garageId);
     }
 }
