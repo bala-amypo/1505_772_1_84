@@ -2,9 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.UserEntity;
 import com.example.demo.repository.UserRepository;
-
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -44,8 +42,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deactivateUser(Long id) {
-        UserEntity user = getUserById(id);
-        user.setActive(false);
-        userRepository.save(user);
+        throw new UnsupportedOperationException("Deactivate user not supported");
     }
 }
