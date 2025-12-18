@@ -1,9 +1,10 @@
 package com.example.demo.service;
 
-
 import com.example.demo.model.VehicleEntity;
 import com.example.demo.repository.VehicleRepository;
+
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class VehicleServiceImpl implements VehicleService {
 
@@ -13,26 +14,37 @@ public class VehicleServiceImpl implements VehicleService {
         this.vehicleRepository = vehicleRepository;
     }
 
+    @Override
     public VehicleEntity createVehicle(VehicleEntity vehicle) {
-        if (vehicleRepository.findByVin(vehicle.getVin()).isPresent())
-            throw new IllegalArgumentException("VIN");
+        if (vehicle == null || vehicle.getVin() == null) {
+            throw new IllegalArgumentException("VIN must not be null");
+        }
+
+        if (vehicleRepository.findByVin(vehicle.getVin()).isPresent()) {
+            throw new IllegalArgumentException("VIN already exists");
+        }
+
         return vehicleRepository.save(vehicle);
     }
 
+    @Override
     public VehicleEntity getVehicleById(Long id) {
         return vehicleRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
+                .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
     }
 
+    @Override
     public VehicleEntity getVehicleByVin(String vin) {
         return vehicleRepository.findByVin(vin)
-                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
+                .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
     }
 
+    @Override
     public List<VehicleEntity> getVehiclesByOwner(Long ownerId) {
         return vehicleRepository.findByOwnerId(ownerId);
     }
 
+    @Override
     public void deactivateVehicle(Long id) {
         VehicleEntity v = getVehicleById(id);
         v.setActive(false);
