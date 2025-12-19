@@ -21,7 +21,28 @@ public class GarageServiceImpl implements GarageService {
         if (garage.getName() == null || garage.getName().isEmpty()) {
             throw new IllegalArgumentException("Garage name required");
         }
+
+        if (repo.findByName(garage.getName()).isPresent()) {
+            throw new IllegalArgumentException("Garage name already exists");
+        }
+
+        garage.setActive(true);
         return repo.save(garage);
+    }
+
+    @Override
+    public GarageEntity updateGarage(Long id, GarageEntity garage) {
+        GarageEntity existing = getGarageById(id);
+
+        if (garage.getName() != null && !garage.getName().isEmpty()) {
+            if (repo.findByName(garage.getName()).isPresent() &&
+                !existing.getName().equals(garage.getName())) {
+                throw new IllegalArgumentException("Garage name already exists");
+            }
+            existing.setName(garage.getName());
+        }
+
+        return repo.save(existing);
     }
 
     @Override
@@ -33,5 +54,12 @@ public class GarageServiceImpl implements GarageService {
     @Override
     public List<GarageEntity> getAllGarages() {
         return repo.findAll();
+    }
+
+    @Override
+    public void deactivateGarage(Long id) {
+        GarageEntity garage = getGarageById(id);
+        garage.setActive(false);
+        repo.save(garage);
     }
 }

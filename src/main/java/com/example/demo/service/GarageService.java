@@ -7,7 +7,11 @@ public interface GarageService {
 
     GarageEntity createGarage(GarageEntity garage);
 
+    GarageEntity updateGarage(Long id, GarageEntity garage);
+
     GarageEntity getGarageById(Long id);
 
     List<GarageEntity> getAllGarages();
+
+    void deactivateGarage(Long id);
 }
