@@ -1,41 +1,63 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "garage")
-public class GarageEntity {
+@Table(
+    name = "garages",
+    uniqueConstraints = @UniqueConstraint(columnNames = "garageName")
+)
+public class Garage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
-
-    private String location;
+    private String garageName;
 
     @Column(nullable = false)
-    private Boolean active = true;
+    private String address;
+
+    @Column(nullable = false)
+    private Boolean active;
+
+    // ✅ One-to-many relationship with ServiceEntry
+    @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ServiceEntry> serviceEntries;
+
+    // ✅ No-arg constructor
+    public Garage() {
+    }
+
+    // ✅ Parameterized constructor
+    public Garage(String garageName, String address, Boolean active) {
+        this.garageName = garageName;
+        this.address = address;
+        this.active = active;
+    }
+
+    // Getters and setters
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getGarageName() {
+        return garageName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setGarageName(String garageName) {
+        this.garageName = garageName;
     }
 
-    public String getLocation() {
-        return location;
+    public String getAddress() {
+        return address;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Boolean getActive() {
@@ -44,5 +66,13 @@ public class GarageEntity {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public List<ServiceEntry> getServiceEntries() {
+        return serviceEntries;
+    }
+
+    public void setServiceEntries(List<ServiceEntry> serviceEntries) {
+        this.serviceEntries = serviceEntries;
     }
 }
