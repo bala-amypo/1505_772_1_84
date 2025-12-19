@@ -1,11 +1,14 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.util.List;
 
 @Entity
-@Table(name = "vehicle", uniqueConstraints = @UniqueConstraint(columnNames = "vin"))
-public class VehicleEntity {
+@Table(
+    name = "vehicles",
+    uniqueConstraints = @UniqueConstraint(columnNames = "vin")
+)
+public class Vehicle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,18 +17,36 @@ public class VehicleEntity {
     @Column(nullable = false, unique = true)
     private String vin;
 
+    @Column(nullable = false)
     private String make;
+
+    @Column(nullable = false)
     private String model;
-    private Integer year;
 
     @Column(nullable = false)
     private Long ownerId;
 
     @Column(nullable = false)
-    private Boolean active = true;
+    private Boolean active;
 
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt = Instant.now();
+    // ✅ One-to-many relationship
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ServiceEntry> serviceEntries;
+
+    // ✅ No-arg constructor
+    public Vehicle() {
+    }
+
+    // ✅ Parameterized constructor
+    public Vehicle(String vin, String make, String model, Long ownerId, Boolean active) {
+        this.vin = vin;
+        this.make = make;
+        this.model = model;
+        this.ownerId = ownerId;
+        this.active = active;
+    }
+
+    // Getters and setters
 
     public Long getId() {
         return id;
@@ -55,14 +76,6 @@ public class VehicleEntity {
         this.model = model;
     }
 
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
-    }
-
     public Long getOwnerId() {
         return ownerId;
     }
@@ -77,5 +90,13 @@ public class VehicleEntity {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public List<ServiceEntry> getServiceEntries() {
+        return serviceEntries;
+    }
+
+    public void setServiceEntries(List<ServiceEntry> serviceEntries) {
+        this.serviceEntries = serviceEntries;
     }
 }
