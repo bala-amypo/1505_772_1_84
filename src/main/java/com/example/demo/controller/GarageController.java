@@ -17,17 +17,17 @@ public class GarageController {
     }
 
     @PostMapping
-    public GarageEntity createGarage(@Valid @RequestBody GarageEntity garage) {
+    public Garage createGarage(@Valid @RequestBody Garage garage) {
         return service.createGarage(garage);
     }
 
     @GetMapping("/{id}")
-    public GarageEntity getGarage(@PathVariable Long id) {
+    public Garage getGarage(@PathVariable Long id) {
         return service.getGarageById(id);
     }
 
     @GetMapping
-    public List<GarageEntity> getAllGarages() {
+    public List<Garage> getAllGarages() {
         return service.getAllGarages();
     }
 }
