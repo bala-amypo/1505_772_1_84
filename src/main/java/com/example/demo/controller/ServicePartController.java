@@ -1,32 +1,24 @@
 package com.example.demo.controller;
-import jakarta.validation.Valid;
-import com.example.demo.model.ServicePartEntity;
+
+import com.example.demo.model.ServicePart;
 import com.example.demo.service.ServicePartService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/service-parts")
+@RequestMapping("/service-parts") // ✅ base path per spec
 public class ServicePartController {
 
-    private final ServicePartService service;
+    private final ServicePartService servicePartService;
 
-    public ServicePartController(ServicePartService service) {
-        this.service = service;
+    // ✅ Constructor DI
+    public ServicePartController(ServicePartService servicePartService) {
+        this.servicePartService = servicePartService;
     }
 
+    // ✅ Create a new service part
     @PostMapping
-    public ServicePartEntity create(@Valid @RequestBody ServicePartEntity p) {
-        return service.createPart(p);
-    }
-
-    @GetMapping("/{id}")
-    public ServicePartEntity get(@PathVariable Long id) {
-        return service.getPartById(id);
-    }
-
-    @GetMapping("/entry/{entryId}")
-    public List<ServicePartEntity> byEntry(@PathVariable Long entryId) {
-        return service.getPartsForEntry(entryId);
+    public ServicePart createPart(@Valid @RequestBody ServicePart part) {
+        return servicePartService.createPart(part);
     }
 }

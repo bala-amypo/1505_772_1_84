@@ -1,32 +1,24 @@
 package com.example.demo.controller;
-import jakarta.validation.Valid;
-import com.example.demo.model.VerificationLogEntity;
+
+import com.example.demo.model.VerificationLog;
 import com.example.demo.service.VerificationLogService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/verification-logs")
+@RequestMapping("/verification-logs") // ✅ base path per spec
 public class VerificationLogController {
 
-    private final VerificationLogService service;
+    private final VerificationLogService verificationLogService;
 
-    public VerificationLogController(VerificationLogService service) {
-        this.service = service;
+    // ✅ Constructor DI
+    public VerificationLogController(VerificationLogService verificationLogService) {
+        this.verificationLogService = verificationLogService;
     }
 
+    // ✅ Create a new verification log
     @PostMapping
-    public VerificationLogEntity create(@Valid @RequestBody VerificationLogEntity log) {
-        return service.createLog(log);
-    }
-
-    @GetMapping("/{id}")
-    public VerificationLogEntity get(@PathVariable Long id) {
-        return service.getLogById(id);
-    }
-
-    @GetMapping("/entry/{entryId}")
-    public List<VerificationLogEntity> byEntry(@PathVariable Long entryId) {
-        return service.getLogsForEntry(entryId);
+    public VerificationLog createLog(@Valid @RequestBody VerificationLog log) {
+        return verificationLogService.createLog(log);
     }
 }
