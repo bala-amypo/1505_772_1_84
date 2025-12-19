@@ -1,32 +1,41 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.ServicePartEntity;
+import com.example.demo.model.ServicePart;
+import com.example.demo.model.ServiceEntry;
 import com.example.demo.repository.ServicePartRepository;
+import com.example.demo.repository.ServiceEntryRepository;
+import com.example.demo.service.ServicePartService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ServicePartServiceImpl implements ServicePartService {
 
-    private final ServicePartRepository repo;
+    private final ServicePartRepository servicePartRepository;
+    private final ServiceEntryRepository serviceEntryRepository;
 
-    public ServicePartServiceImpl(ServicePartRepository repo) {
-        this.repo = repo;
+    // ✅ Constructor-based DI
+    public ServicePartServiceImpl(
+            ServicePartRepository servicePartRepository,
+            ServiceEntryRepository serviceEntryRepository) {
+        this.servicePartRepository = servicePartRepository;
+        this.serviceEntryRepository = serviceEntryRepository;
     }
 
-    public ServicePartEntity createPart(ServicePartEntity part) {
-        if (part.getQuantity() <= 0)
-            throw new IllegalArgumentException("Quantity");
-        return repo.save(part);
-    }
+    @Override
+    public ServicePart createPart(ServicePart part) {
 
-    public List<ServicePartEntity> getPartsForEntry(Long entryId) {
-        return repo.findByServiceEntryId(entryId);
-    }
+        // ✅ Verify parent ServiceEntry exists
+        Long entryId = part.getServiceEntry().getId();
+        ServiceEntry entry = serviceEntryRepository.findById(entryId)
+                .orElseThrow(() -> new EntityNotFoundException("ServiceEntry not found"));
 
-    public ServicePartEntity getPartById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Part not found"));
+        // ✅ Positive quantity
+        if (part.getQuantity() == null || part.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Quantity must be greater than 0");
+        }
+
+        part.setServiceEntry(entry);
+        return servicePartRepository.save(part);
     }
 }
