@@ -1,30 +1,41 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.VerificationLogEntity;
+import com.example.demo.model.ServiceEntry;
+import com.example.demo.model.VerificationLog;
+import com.example.demo.repository.ServiceEntryRepository;
 import com.example.demo.repository.VerificationLogRepository;
+import com.example.demo.service.VerificationLogService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.NoSuchElementException;
+
+import java.time.LocalDateTime;
 
 @Service
 public class VerificationLogServiceImpl implements VerificationLogService {
 
-    private final VerificationLogRepository repo;
+    private final VerificationLogRepository logRepository;
+    private final ServiceEntryRepository entryRepository;
 
-    public VerificationLogServiceImpl(VerificationLogRepository repo) {
-        this.repo = repo;
+    // ✅ Constructor-based DI
+    public VerificationLogServiceImpl(
+            VerificationLogRepository logRepository,
+            ServiceEntryRepository entryRepository) {
+        this.logRepository = logRepository;
+        this.entryRepository = entryRepository;
     }
 
-    public VerificationLogEntity createLog(VerificationLogEntity log) {
-        return repo.save(log);
-    }
+    @Override
+    public VerificationLog createLog(VerificationLog log) {
 
-    public List<VerificationLogEntity> getLogsForEntry(Long entryId) {
-        return repo.findByServiceEntryId(entryId);
-    }
+        // ✅ Ensure parent ServiceEntry exists
+        Long entryId = log.getServiceEntry().getId();
+        ServiceEntry entry = entryRepository.findById(entryId)
+                .orElseThrow(() -> new EntityNotFoundException("ServiceEntry not found"));
 
-    public VerificationLogEntity getLogById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Log not found"));
+        // ✅ Set immutable fields
+        log.setServiceEntry(entry);
+        log.setVerifiedAt(LocalDateTime.now());
+
+        return logRepository.save(log);
     }
 }
