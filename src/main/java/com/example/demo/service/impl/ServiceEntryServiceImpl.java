@@ -1,51 +1,76 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.ServiceEntryEntity;
-import com.example.demo.model.VehicleEntity;
+import com.example.demo.model.Garage;
+import com.example.demo.model.ServiceEntry;
+import com.example.demo.model.Vehicle;
+import com.example.demo.repository.GarageRepository;
 import com.example.demo.repository.ServiceEntryRepository;
+import com.example.demo.repository.VehicleRepository;
+import com.example.demo.service.ServiceEntryService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ServiceEntryServiceImpl implements ServiceEntryService {
 
-    private final ServiceEntryRepository repo;
+    private final ServiceEntryRepository serviceEntryRepository;
+    private final VehicleRepository vehicleRepository;
+    private final GarageRepository garageRepository;
 
-    public ServiceEntryServiceImpl(ServiceEntryRepository repo) {
-        this.repo = repo;
+    // ✅ Constructor-based DI
+    public ServiceEntryServiceImpl(
+            ServiceEntryRepository serviceEntryRepository,
+            VehicleRepository vehicleRepository,
+            GarageRepository garageRepository) {
+
+        this.serviceEntryRepository = serviceEntryRepository;
+        this.vehicleRepository = vehicleRepository;
+        this.garageRepository = garageRepository;
     }
 
-    public ServiceEntryEntity createServiceEntry(ServiceEntryEntity entry) {
+    @Override
+    public ServiceEntry createServiceEntry(ServiceEntry entry) {
 
-        VehicleEntity v = entry.getVehicle();
-        if (v == null)
-            throw new IllegalArgumentException("Vehicle required");
+        // ✅ Load Vehicle
+        Vehicle vehicle = vehicleRepository.findById(entry.getVehicle().getId())
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Vehicle not found"));
 
-        if (entry.getServiceDate().isAfter(LocalDate.now()))
+        // ✅ Load Garage
+        Garage garage = garageRepository.findById(entry.getGarage().getId())
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Garage not found"));
+
+        // ✅ Reject inactive vehicle
+        if (!Boolean.TRUE.equals(vehicle.getActive())) {
+            throw new IllegalArgumentException("Only active vehicles can receive services");
+        }
+
+        // ✅ Reject future date
+        if (entry.getServiceDate().isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("future");
+        }
 
-        List<ServiceEntryEntity> last =
-                repo.findTopByVehicleOrderByOdometerReadingDesc(v);
+        // ✅ Odometer must be non-decreasing
+        serviceEntryRepository
+                .findTopByVehicleOrderByOdometerReadingDesc(vehicle)
+                .ifPresent(last -> {
+                    if (entry.getOdometerReading() < last.getOdometerReading()) {
+                        throw new IllegalArgumentException(">=");
+                    }
+                });
 
-        if (!last.isEmpty() &&
-            entry.getOdometerReading() < last.get(0).getOdometerReading())
-            throw new IllegalArgumentException(">=");
+        entry.setVehicle(vehicle);
+        entry.setGarage(garage);
 
-        return repo.save(entry);
+        return serviceEntryRepository.save(entry);
     }
 
-    public ServiceEntryEntity getEntryById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Entry not found"));
-    }
-
-    public List<ServiceEntryEntity> getEntriesForVehicle(Long vehicleId) {
-        return repo.findByVehicleId(vehicleId);
-    }
-
-    public List<ServiceEntryEntity> getEntriesByGarage(Long garageId) {
-        return repo.findByGarageId(garageId);
+    @Override
+    public List<ServiceEntry> getEntriesForVehicle(Long vehicleId) {
+        return serviceEntryRepository.findByVehicleId(vehicleId);
     }
 }
