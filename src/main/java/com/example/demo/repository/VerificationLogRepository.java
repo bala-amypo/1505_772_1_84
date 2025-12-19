@@ -1,9 +1,8 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.VerificationLogEntity;
+import com.example.demo.model.VerificationLog;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.List;
 
-public interface VerificationLogRepository extends JpaRepository<VerificationLogEntity, Long> {
-    List<VerificationLogEntity> findByServiceEntryId(Long entryId);
+public interface VerificationLogRepository extends JpaRepository<VerificationLog, Long> {
+    // No extra methods required as per specification
 }
