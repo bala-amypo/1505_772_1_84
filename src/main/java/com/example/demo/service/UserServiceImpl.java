@@ -9,39 +9,29 @@ import java.util.NoSuchElementException;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repo;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserRepository repo) {
+        this.repo = repo;
     }
 
-    @Override
     public UserEntity createUser(UserEntity user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        if (repo.findByEmail(user.getEmail()).isPresent())
             throw new IllegalArgumentException("Email already exists");
-        }
-        return userRepository.save(user);
+        return repo.save(user);
     }
 
-    @Override
     public UserEntity getUserById(Long id) {
-        return userRepository.findById(id)
+        return repo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 
-    @Override
     public UserEntity getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
+        return repo.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 
-    @Override
     public List<UserEntity> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public void deactivateUser(Long id) {
-        throw new UnsupportedOperationException("Deactivate user not supported");
+        return repo.findAll();
     }
 }

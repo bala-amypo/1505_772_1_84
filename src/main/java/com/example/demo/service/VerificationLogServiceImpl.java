@@ -5,6 +5,7 @@ import com.example.demo.repository.VerificationLogRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
+
 @Service
 public class VerificationLogServiceImpl implements VerificationLogService {
 
@@ -14,17 +15,14 @@ public class VerificationLogServiceImpl implements VerificationLogService {
         this.repo = repo;
     }
 
-    @Override
     public VerificationLogEntity createLog(VerificationLogEntity log) {
         return repo.save(log);
     }
 
-    @Override
     public List<VerificationLogEntity> getLogsForEntry(Long entryId) {
         return repo.findByServiceEntryId(entryId);
     }
 
-    @Override
     public VerificationLogEntity getLogById(Long id) {
         return repo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Log not found"));

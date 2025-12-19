@@ -5,49 +5,33 @@ import com.example.demo.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
+
 @Service
 public class VehicleServiceImpl implements VehicleService {
 
-    private final VehicleRepository vehicleRepository;
+    private final VehicleRepository repo;
 
-    public VehicleServiceImpl(VehicleRepository vehicleRepository) {
-        this.vehicleRepository = vehicleRepository;
+    public VehicleServiceImpl(VehicleRepository repo) {
+        this.repo = repo;
     }
 
-    @Override
-    public VehicleEntity createVehicle(VehicleEntity vehicle) {
-        if (vehicle == null || vehicle.getVin() == null) {
-            throw new IllegalArgumentException("VIN must not be null");
-        }
-
-        if (vehicleRepository.findByVin(vehicle.getVin()).isPresent()) {
-            throw new IllegalArgumentException("VIN already exists");
-        }
-
-        return vehicleRepository.save(vehicle);
+    public VehicleEntity createVehicle(VehicleEntity v) {
+        if (repo.findByVin(v.getVin()).isPresent())
+            throw new IllegalArgumentException("VIN");
+        return repo.save(v);
     }
 
-    @Override
     public VehicleEntity getVehicleById(Long id) {
-        return vehicleRepository.findById(id)
+        return repo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
     }
 
-    @Override
     public VehicleEntity getVehicleByVin(String vin) {
-        return vehicleRepository.findByVin(vin)
+        return repo.findByVin(vin)
                 .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
     }
 
-    @Override
     public List<VehicleEntity> getVehiclesByOwner(Long ownerId) {
-        return vehicleRepository.findByOwnerId(ownerId);
-    }
-
-    @Override
-    public void deactivateVehicle(Long id) {
-        VehicleEntity v = getVehicleById(id);
-        v.setActive(false);
-        vehicleRepository.save(v);
+        return repo.findByOwnerId(ownerId);
     }
 }
