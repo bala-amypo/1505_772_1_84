@@ -12,55 +12,50 @@ public class GarageServiceImpl implements GarageService {
 
     private final GarageRepository repo;
 
-        public GarageServiceImpl(GarageRepository repo) {
-                this.repo = repo;
-                    }
+    public GarageServiceImpl(GarageRepository repo) {
+        this.repo = repo;
+    }
 
-                        @Override
-                            public GarageEntity createGarage(GarageEntity garage) {
-                                    if (garage.getName() == null || garage.getName().isEmpty()) {
-                                                throw new IllegalArgumentException("Garage name required");
-                                                        }
+    @Override
+    public GarageEntity createGarage(GarageEntity garage) {
+        if (garage.getName() == null || garage.getName().isEmpty()) {
+            throw new IllegalArgumentException("Garage name required");
+        }
+        if (repo.findByName(garage.getName()).isPresent()) {
+            throw new IllegalArgumentException("Garage name already exists");
+        }
+        garage.setActive(true);
+        return repo.save(garage);
+    }
 
-                                                                if (repo.findByName(garage.getName()).isPresent()) {
-                                                                            throw new IllegalArgumentException("Garage name already exists");
-                                                                                    }
+    @Override
+    public GarageEntity updateGarage(Long id, GarageEntity garage) {
+        GarageEntity existing = getGarageById(id);
+        if (garage.getName() != null && !garage.getName().isEmpty()) {
+            if (repo.findByName(garage.getName()).isPresent() &&
+                !existing.getName().equals(garage.getName())) {
+                throw new IllegalArgumentException("Garage name already exists");
+            }
+            existing.setName(garage.getName());
+        }
+        return repo.save(existing);
+    }
 
-                                                                                            garage.setActive(true);
-                                                                                                    return repo.save(garage);
-                                                                                                        }
+    @Override
+    public GarageEntity getGarageById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Garage not found"));
+    }
 
-                                                                                                            @Override
-                                                                                                                public GarageEntity updateGarage(Long id, GarageEntity garage) {
-                                                                                                                        GarageEntity existing = getGarageById(id);
+    @Override
+    public List<GarageEntity> getAllGarages() {
+        return repo.findAll();
+    }
 
-                                                                                                                                if (garage.getName() != null && !garage.getName().isEmpty()) {
-                                                                                                                                            if (repo.findByName(garage.getName()).isPresent() &&
-                                                                                                                                                            !existing.getName().equals(garage.getName())) {
-                                                                                                                                                                            throw new IllegalArgumentException("Garage name already exists");
-                                                                                                                                                                                        }
-                                                                                                                                                                                                    existing.setName(garage.getName());
-                                                                                                                                                                                                            }
-
-                                                                                                                                                                                                                    return repo.save(existing);
-                                                                                                                                                                                                                        }
-
-                                                                                                                                                                                                                            @Override
-                                                                                                                                                                                                                                public GarageEntity getGarageById(Long id) {
-                                                                                                                                                                                                                                        return repo.findById(id)
-                                                                                                                                                                                                                                                        .orElseThrow(() -> new NoSuchElementException("Garage not found"));
-                                                                                                                                                                                                                                                            }
-
-                                                                                                                                                                                                                                                                @Override
-                                                                                                                                                                                                                                                                    public List<GarageEntity> getAllGarages() {
-                                                                                                                                                                                                                                                                            return repo.findAll();
-                                                                                                                                                                                                                                                                                }
-
-                                                                                                                                                                                                                                                                                    @Override
-                                                                                                                                                                                                                                                                                        public void deactivateGarage(Long id) {
-                                                                                                                                                                                                                                                                                                GarageEntity garage = getGarageById(id);
-                                                                                                                                                                                                                                                                                                        garage.setActive(false);
-                                                                                                                                                                                                                                                                                                                repo.save(garage);
-                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                    
+    @Override
+    public void deactivateGarage(Long id) {
+        GarageEntity garage = getGarageById(id);
+        garage.setActive(false);
+        repo.save(garage);
+    }
+}
