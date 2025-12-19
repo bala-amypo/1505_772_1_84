@@ -1,50 +1,58 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.VehicleEntity;
+import com.example.demo.model.Vehicle;
 import com.example.demo.repository.VehicleRepository;
+import com.example.demo.service.VehicleService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
 
-    private final VehicleRepository repo;
+    private final VehicleRepository vehicleRepository;
 
-    public VehicleServiceImpl(VehicleRepository repo) {
-        this.repo = repo;
+    // ✅ Constructor-based DI
+    public VehicleServiceImpl(VehicleRepository vehicleRepository) {
+        this.vehicleRepository = vehicleRepository;
     }
 
+    // ✅ VIN uniqueness enforcement
     @Override
-    public VehicleEntity createVehicle(VehicleEntity v) {
-        if (repo.findByVin(v.getVin()).isPresent()) {
+    public Vehicle createVehicle(Vehicle vehicle) {
+        if (vehicleRepository.findByVin(vehicle.getVin()).isPresent()) {
             throw new IllegalArgumentException("VIN already exists");
         }
-        return repo.save(v);
+        return vehicleRepository.save(vehicle);
+    }
+
+    // ✅ Not-found behavior
+    @Override
+    public Vehicle getVehicleById(Long id) {
+        return vehicleRepository.findById(id)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Vehicle not found"));
     }
 
     @Override
-    public VehicleEntity getVehicleById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
+    public Vehicle getVehicleByVin(String vin) {
+        return vehicleRepository.findByVin(vin)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Vehicle not found"));
     }
 
+    // ✅ Retrieval by owner
     @Override
-    public VehicleEntity getVehicleByVin(String vin) {
-        return repo.findByVin(vin)
-                .orElseThrow(() -> new NoSuchElementException("Vehicle not found"));
+    public List<Vehicle> getVehiclesByOwner(Long ownerId) {
+        return vehicleRepository.findByOwnerId(ownerId);
     }
 
-    @Override
-    public List<VehicleEntity> getVehiclesByOwner(Long ownerId) {
-        return repo.findByOwnerId(ownerId);
-    }
-
+    // ✅ Deactivation rule
     @Override
     public void deactivateVehicle(Long id) {
-        VehicleEntity vehicle = getVehicleById(id);
+        Vehicle vehicle = getVehicleById(id);
         vehicle.setActive(false);
-        repo.save(vehicle);
+        vehicleRepository.save(vehicle);
     }
 }
