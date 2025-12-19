@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 import jakarta.validation.Valid;
-import com.example.demo.model.GarageEntity;
+import com.example.demo.model.Garage;
 import com.example.demo.service.GarageService;
 import org.springframework.web.bind.annotation.*;
 
