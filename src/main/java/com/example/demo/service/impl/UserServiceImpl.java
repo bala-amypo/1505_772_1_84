@@ -15,23 +15,23 @@ public class UserServiceImpl implements UserService {
         this.repo = repo;
     }
 
-    public UserEntity createUser(UserEntity user) {
+    public User createUser(User user) {
         if (repo.findByEmail(user.getEmail()).isPresent())
             throw new IllegalArgumentException("Email already exists");
         return repo.save(user);
     }
 
-    public UserEntity getUserById(Long id) {
+    public User getUserById(Long id) {
         return repo.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 
-    public UserEntity getUserByEmail(String email) {
+    public User getUserByEmail(String email) {
         return repo.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
     }
 
-    public List<UserEntity> getAllUsers() {
+    public List<User> getAllUsers() {
         return repo.findAll();
     }
 }
