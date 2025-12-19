@@ -43,4 +43,8 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void deactivateVehicle(Long id) {
-        VehicleEntity vehicle = getV
+        VehicleEntity vehicle = getVehicleById(id);
+        vehicle.setActive(false);
+        repo.save(vehicle);
+    }
+}
