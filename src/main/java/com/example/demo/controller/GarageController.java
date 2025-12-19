@@ -1,5 +1,5 @@
 package com.example.demo.controller;
-
+import 
 import com.example.demo.model.GarageEntity;
 import com.example.demo.service.GarageService;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +17,7 @@ public class GarageController {
     }
 
     @PostMapping
-    public GarageEntity createGarage(@RequestBody GarageEntity garage) {
+    public GarageEntity createGarage(@Valid @RequestBody GarageEntity garage) {
         return service.createGarage(garage);
     }
 
