@@ -1,22 +1,51 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-public class VerificationLogEntity {
+@Table(name = "verification_logs")
+public class VerificationLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String message;
+    // ✅ Many-to-one with ServiceEntry
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "service_entry_id", nullable = false)
+    private ServiceEntry serviceEntry;
 
-    @ManyToOne
-    private ServiceEntryEntity serviceEntry;
+    // ✅ Immutable creation timestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime verifiedAt;
 
-    public Long getId() { return id; }
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
-    public ServiceEntryEntity getServiceEntry() { return serviceEntry; }
-    public void setServiceEntry(ServiceEntryEntity serviceEntry) { this.serviceEntry = serviceEntry; }
+    // ✅ No-arg constructor
+    public VerificationLog() {
+    }
+
+    // ✅ Parameterized constructor (verifiedAt optional)
+    public VerificationLog(ServiceEntry serviceEntry) {
+        this.serviceEntry = serviceEntry;
+        this.verifiedAt = LocalDateTime.now();
+    }
+
+    public VerificationLog(ServiceEntry serviceEntry, LocalDateTime verifiedAt) {
+        this.serviceEntry = serviceEntry;
+        this.verifiedAt = verifiedAt != null ? verifiedAt : LocalDateTime.now();
+    }
+
+    // Getters only (immutability intent)
+
+    public Long getId() {
+        return id;
+    }
+
+    public ServiceEntry getServiceEntry() {
+        return serviceEntry;
+    }
+
+    public LocalDateTime getVerifiedAt() {
+        return verifiedAt;
+    }
 }
