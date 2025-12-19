@@ -1,5 +1,5 @@
 package com.example.demo.controller;
-
+import jakarta.validation.Valid;
 import com.example.demo.model.VerificationLogEntity;
 import com.example.demo.service.VerificationLogService;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ public class VerificationLogController {
     }
 
     @PostMapping
-    public VerificationLogEntity create(@RequestBody VerificationLogEntity log) {
+    public VerificationLogEntity create(@Valid @RequestBody VerificationLogEntity log) {
         return service.createLog(log);
     }
 

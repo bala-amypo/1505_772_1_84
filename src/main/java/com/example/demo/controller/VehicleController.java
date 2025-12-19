@@ -1,5 +1,5 @@
 package com.example.demo.controller;
-
+import jakarta.validation.Valid;
 import com.example.demo.model.VehicleEntity;
 import com.example.demo.service.VehicleService;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ public class VehicleController {
     }
 
     @PostMapping
-    public VehicleEntity create(@RequestBody VehicleEntity v) {
+    public VehicleEntity create(@Valid @RequestBody VehicleEntity v) {
         return service.createVehicle(v);
     }
 

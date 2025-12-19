@@ -1,5 +1,5 @@
 package com.example.demo.controller;
-
+import jakarta.validation.Valid;
 import com.example.demo.model.ServiceEntryEntity;
 import com.example.demo.service.ServiceEntryService;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ public class ServiceEntryController {
     }
 
     @PostMapping
-    public ServiceEntryEntity create(@RequestBody ServiceEntryEntity e) {
+    public ServiceEntryEntity create(@Valid @RequestBody ServiceEntryEntity e) {
         return service.createServiceEntry(e);
     }
 
