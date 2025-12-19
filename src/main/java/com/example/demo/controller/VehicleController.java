@@ -1,42 +1,44 @@
 package com.example.demo.controller;
-import jakarta.validation.Valid;
-import com.example.demo.model.VehicleEntity;
+
+import com.example.demo.model.Vehicle;
 import com.example.demo.service.VehicleService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/vehicles")
+@RequestMapping("/vehicles") // ✅ base path per spec
 public class VehicleController {
 
-    private final VehicleService service;
+    private final VehicleService vehicleService;
 
-    public VehicleController(VehicleService service) {
-        this.service = service;
+    // ✅ Constructor injection
+    public VehicleController(VehicleService vehicleService) {
+        this.vehicleService = vehicleService;
     }
 
+    // ✅ Create vehicle
     @PostMapping
-    public VehicleEntity create(@Valid @RequestBody VehicleEntity v) {
-        return service.createVehicle(v);
+    public Vehicle createVehicle(@Valid @RequestBody Vehicle vehicle) {
+        return vehicleService.createVehicle(vehicle);
     }
 
+    // ✅ Get vehicle by ID
     @GetMapping("/{id}")
-    public VehicleEntity get(@PathVariable Long id) {
-        return service.getVehicleById(id);
+    public Vehicle getVehicleById(@PathVariable Long id) {
+        return vehicleService.getVehicleById(id);
     }
 
-    @GetMapping("/vin/{vin}")
-    public VehicleEntity getByVin(@PathVariable String vin) {
-        return service.getVehicleByVin(vin);
-    }
-
+    // ✅ Get vehicles by owner
     @GetMapping("/owner/{ownerId}")
-    public List<VehicleEntity> byOwner(@PathVariable Long ownerId) {
-        return service.getVehiclesByOwner(ownerId);
+    public List<Vehicle> getVehiclesByOwner(@PathVariable Long ownerId) {
+        return vehicleService.getVehiclesByOwner(ownerId);
     }
 
-    @PutMapping("/{id}/deactivate")
-    public void deactivate(@PathVariable Long id) {
-        service.deactivateVehicle(id);
+    // ✅ Deactivate vehicle
+    @PostMapping("/{id}/deactivate")
+    public void deactivateVehicle(@PathVariable Long id) {
+        vehicleService.deactivateVehicle(id);
     }
 }
