@@ -32,10 +32,12 @@ public class VerificationLogServiceImpl implements VerificationLogService {
         ServiceEntry entry = entryRepository.findById(entryId)
                 .orElseThrow(() -> new EntityNotFoundException("ServiceEntry not found"));
 
-        // ✅ Set immutable fields
-        log.setServiceEntry(entry);
-        log.setVerifiedAt(LocalDateTime.now());
+        // ✅ Create new immutable VerificationLog
+        VerificationLog newLog = new VerificationLog(
+                entry,
+                LocalDateTime.now()
+        );
 
-        return logRepository.save(log);
+        return logRepository.save(newLog);
     }
 }
