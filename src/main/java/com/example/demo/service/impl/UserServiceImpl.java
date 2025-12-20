@@ -35,12 +35,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Long id, User user) {
-        // Ensure user exists
-        getUserById(id);
+        User existing = getUserById(id);
 
-        // Force update on same ID
-        user.setId(id);
-        return userRepository.save(user);
+        /*
+         Update ONLY fields that actually exist in User entity.
+         Example below assumes only password is mutable.
+         Adjust if your User has more fields with setters.
+        */
+        existing.setPassword(user.getPassword());
+
+        return userRepository.save(existing);
     }
 
     @Override
