@@ -6,17 +6,15 @@ import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/service-parts") // ✅ base path per spec
+@RequestMapping("/service-parts") 
 public class ServicePartController {
 
     private final ServicePartService servicePartService;
 
-    // ✅ Constructor DI
     public ServicePartController(ServicePartService servicePartService) {
         this.servicePartService = servicePartService;
     }
 
-    // ✅ Create a new service part
     @PostMapping
     public ServicePart createPart(@Valid @RequestBody ServicePart part) {
         return servicePartService.createPart(part);

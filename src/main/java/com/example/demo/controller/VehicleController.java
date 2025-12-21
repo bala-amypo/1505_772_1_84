@@ -8,12 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/vehicles") // ✅ base path per spec
+@RequestMapping("/vehicles") 
 public class VehicleController {
 
     private final VehicleService vehicleService;
 
-    // ✅ Constructor injection
     public VehicleController(VehicleService vehicleService) {
         this.vehicleService = vehicleService;
     }
