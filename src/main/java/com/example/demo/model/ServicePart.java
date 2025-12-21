@@ -10,7 +10,6 @@ public class ServicePart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ Many-to-one with ServiceEntry
     @ManyToOne(optional = false)
     @JoinColumn(name = "service_entry_id", nullable = false)
     private ServiceEntry serviceEntry;
@@ -21,18 +20,15 @@ public class ServicePart {
     @Column(nullable = false)
     private Integer quantity;
 
-    // ✅ No-arg constructor
     public ServicePart() {
     }
 
-    // ✅ Parameterized constructor
     public ServicePart(ServiceEntry serviceEntry, String partName, Integer quantity) {
         this.serviceEntry = serviceEntry;
         this.partName = partName;
         this.quantity = quantity;
     }
 
-    // Getters and setters
 
     public Long getId() {
         return id;

@@ -12,12 +12,10 @@ public class ServiceEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ Many-to-one with Vehicle
     @ManyToOne(optional = false)
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
-    // ✅ Many-to-one with Garage
     @ManyToOne(optional = false)
     @JoinColumn(name = "garage_id", nullable = false)
     private Garage garage;
@@ -31,15 +29,12 @@ public class ServiceEntry {
     @Column(nullable = false)
     private Integer odometerReading;
 
-    // ✅ One-to-many with ServicePart
     @OneToMany(mappedBy = "serviceEntry", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServicePart> serviceParts;
 
-    // ✅ No-arg constructor
     public ServiceEntry() {
     }
 
-    // ✅ Parameterized constructor
     public ServiceEntry(
             Vehicle vehicle,
             Garage garage,

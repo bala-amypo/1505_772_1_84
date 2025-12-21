@@ -11,16 +11,13 @@ public class VerificationLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // ✅ Many-to-one with ServiceEntry
     @ManyToOne(optional = false)
     @JoinColumn(name = "service_entry_id", nullable = false)
     private ServiceEntry serviceEntry;
 
-    // ✅ Immutable creation timestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime verifiedAt;
 
-    // ✅ No-arg constructor
     public VerificationLog() {
     }
 

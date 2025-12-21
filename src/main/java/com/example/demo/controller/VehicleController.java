@@ -17,25 +17,21 @@ public class VehicleController {
         this.vehicleService = vehicleService;
     }
 
-    // ✅ Create vehicle
     @PostMapping
     public Vehicle createVehicle(@Valid @RequestBody Vehicle vehicle) {
         return vehicleService.createVehicle(vehicle);
     }
 
-    // ✅ Get vehicle by ID
     @GetMapping("/{id}")
     public Vehicle getVehicleById(@PathVariable Long id) {
         return vehicleService.getVehicleById(id);
     }
 
-    // ✅ Get vehicles by owner
     @GetMapping("/owner/{ownerId}")
     public List<Vehicle> getVehiclesByOwner(@PathVariable Long ownerId) {
         return vehicleService.getVehiclesByOwner(ownerId);
     }
 
-    // ✅ Deactivate vehicle
     @PostMapping("/{id}/deactivate")
     public void deactivateVehicle(@PathVariable Long id) {
         vehicleService.deactivateVehicle(id);

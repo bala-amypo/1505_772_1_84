@@ -23,22 +23,18 @@ public class Garage {
     @Column(nullable = false)
     private Boolean active;
 
-    // ✅ One-to-many relationship with ServiceEntry
     @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServiceEntry> serviceEntries;
 
-    // ✅ No-arg constructor
     public Garage() {
     }
 
-    // ✅ Parameterized constructor
     public Garage(String garageName, String address, Boolean active) {
         this.garageName = garageName;
         this.address = address;
         this.active = active;
     }
 
-    // Getters and setters
 
     public Long getId() {
         return id;

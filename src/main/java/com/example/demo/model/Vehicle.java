@@ -29,15 +29,12 @@ public class Vehicle {
     @Column(nullable = false)
     private Boolean active;
 
-    // ✅ One-to-many relationship
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServiceEntry> serviceEntries;
 
-    // ✅ No-arg constructor
     public Vehicle() {
     }
 
-    // ✅ Parameterized constructor
     public Vehicle(String vin, String make, String model, Long ownerId, Boolean active) {
         this.vin = vin;
         this.make = make;
@@ -46,7 +43,6 @@ public class Vehicle {
         this.active = active;
     }
 
-    // Getters and setters
 
     public Long getId() {
         return id;
