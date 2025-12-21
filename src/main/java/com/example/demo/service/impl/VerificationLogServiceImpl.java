@@ -26,12 +26,10 @@ public class VerificationLogServiceImpl implements VerificationLogService {
     @Override
     public VerificationLog createLog(VerificationLog log) {
 
-        // ✅ Ensure parent ServiceEntry exists
         Long entryId = log.getServiceEntry().getId();
         ServiceEntry entry = entryRepository.findById(entryId)
                 .orElseThrow(() -> new EntityNotFoundException("ServiceEntry not found"));
 
-        // ✅ Create new immutable VerificationLog
         VerificationLog newLog = new VerificationLog(
                 entry,
                 LocalDateTime.now()
