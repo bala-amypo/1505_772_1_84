@@ -5,8 +5,8 @@ import java.util.List;
 
 @Entity
 @Table(
-    name = "garages",
-    uniqueConstraints = @UniqueConstraint(columnNames = "garageName")
+        name = "garages",
+        uniqueConstraints = @UniqueConstraint(columnNames = "garageName")
 )
 public class Garage {
 
@@ -17,24 +17,26 @@ public class Garage {
     @Column(nullable = false, unique = true)
     private String garageName;
 
-    @Column(nullable = false)
     private String address;
 
-    @Column(nullable = false)
-    private Boolean active;
+    private String contactNumber;
 
-    @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Boolean active = true;
+
+    @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL)
     private List<ServiceEntry> serviceEntries;
 
     public Garage() {
     }
 
-    public Garage(String garageName, String address, Boolean active) {
+    public Garage(Long id, String garageName, String address,
+                  String contactNumber, Boolean active) {
+        this.id = id;
         this.garageName = garageName;
         this.address = address;
+        this.contactNumber = contactNumber;
         this.active = active;
     }
-
 
     public Long getId() {
         return id;
@@ -56,6 +58,14 @@ public class Garage {
         this.address = address;
     }
 
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
     public Boolean getActive() {
         return active;
     }
@@ -66,9 +76,5 @@ public class Garage {
 
     public List<ServiceEntry> getServiceEntries() {
         return serviceEntries;
-    }
-
-    public void setServiceEntries(List<ServiceEntry> serviceEntries) {
-        this.serviceEntries = serviceEntries;
     }
 }
