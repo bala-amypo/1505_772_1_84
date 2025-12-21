@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "verification_logs")
@@ -11,27 +11,25 @@ public class VerificationLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "service_entry_id", nullable = false)
     private ServiceEntry serviceEntry;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime verifiedAt;
+    private Timestamp verifiedAt = new Timestamp(System.currentTimeMillis());
+
+    private Boolean verifiedBySystem = true;
+
+    private String notes;
 
     public VerificationLog() {
     }
 
-    public VerificationLog(ServiceEntry serviceEntry) {
+    public VerificationLog(ServiceEntry serviceEntry, Boolean verifiedBySystem, String notes) {
         this.serviceEntry = serviceEntry;
-        this.verifiedAt = LocalDateTime.now();
+        this.verifiedBySystem = verifiedBySystem;
+        this.notes = notes;
+        this.verifiedAt = new Timestamp(System.currentTimeMillis());
     }
-
-    public VerificationLog(ServiceEntry serviceEntry, LocalDateTime verifiedAt) {
-        this.serviceEntry = serviceEntry;
-        this.verifiedAt = verifiedAt != null ? verifiedAt : LocalDateTime.now();
-    }
-
-    // Getters only (immutability intent)
 
     public Long getId() {
         return id;
@@ -41,7 +39,27 @@ public class VerificationLog {
         return serviceEntry;
     }
 
-    public LocalDateTime getVerifiedAt() {
+    public void setServiceEntry(ServiceEntry serviceEntry) {
+        this.serviceEntry = serviceEntry;
+    }
+
+    public Timestamp getVerifiedAt() {
         return verifiedAt;
+    }
+
+    public Boolean getVerifiedBySystem() {
+        return verifiedBySystem;
+    }
+
+    public void setVerifiedBySystem(Boolean verifiedBySystem) {
+        this.verifiedBySystem = verifiedBySystem;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }
