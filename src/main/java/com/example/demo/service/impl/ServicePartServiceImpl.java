@@ -1,38 +1,75 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.model.ServicePart;
-import com.example.demo.model.ServiceEntry;
-import com.example.demo.repository.ServicePartRepository;
-import com.example.demo.repository.ServiceEntryRepository;
-import com.example.demo.service.ServicePartService;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.demo.exception.EntityNotFoundException;
+import com.example.demo.model.Garage;
+import com.example.demo.repository.GarageRepository;
+import com.example.demo.service.GarageService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class ServicePartServiceImpl implements ServicePartService {
+public class GarageServiceImpl implements GarageService {
 
-    private final ServicePartRepository servicePartRepository;
-    private final ServiceEntryRepository serviceEntryRepository;
+    private final GarageRepository garageRepository;
 
-    public ServicePartServiceImpl(
-            ServicePartRepository servicePartRepository,
-            ServiceEntryRepository serviceEntryRepository) {
-        this.servicePartRepository = servicePartRepository;
-        this.serviceEntryRepository = serviceEntryRepository;
+    public GarageServiceImpl(GarageRepository garageRepository) {
+        this.garageRepository = garageRepository;
     }
 
     @Override
-    public ServicePart createPart(ServicePart part) {
+    public Garage createGarage(Garage garage) {
 
-        Long entryId = part.getServiceEntry().getId();
-        ServiceEntry entry = serviceEntryRepository.findById(entryId)
-                .orElseThrow(() -> new EntityNotFoundException("ServiceEntry not found"));
-
-        if (part.getQuantity() == null || part.getQuantity() <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than 0");
+        if (garageRepository.findByGarageName(garage.getGarageName()).isPresent()) {
+            throw new IllegalArgumentException("Garage already exists");
         }
 
-        part.setServiceEntry(entry);
-        return servicePartRepository.save(part);
+        garage.setActive(true);
+        return garageRepository.save(garage);
+    }
+
+    @Override
+    public Garage updateGarage(Long id, Garage garage) {
+
+        Garage existing = getGarageById(id);
+
+        if (garage.getGarageName() != null &&
+            !garage.getGarageName().equals(existing.getGarageName())) {
+
+            if (garageRepository.findByGarageName(garage.getGarageName()).isPresent()) {
+                throw new IllegalArgumentException("Garage already exists");
+            }
+
+            existing.setGarageName(garage.getGarageName());
+        }
+
+        if (garage.getAddress() != null) {
+            existing.setAddress(garage.getAddress());
+        }
+
+        if (garage.getContactNumber() != null) {
+            existing.setContactNumber(garage.getContactNumber());
+        }
+
+        return garageRepository.save(existing);
+    }
+
+    @Override
+    public Garage getGarageById(Long id) {
+        return garageRepository.findById(id)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Garage not found"));
+    }
+
+    @Override
+    public List<Garage> getAllGarages() {
+        return garageRepository.findAll();
+    }
+
+    @Override
+    public void deactivateGarage(Long id) {
+        Garage garage = getGarageById(id);
+        garage.setActive(false);
+        garageRepository.save(garage);
     }
 }
