@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.exception.EntityNotFoundException;
 import com.example.demo.model.Garage;
 import com.example.demo.model.ServiceEntry;
 import com.example.demo.model.Vehicle;
@@ -7,10 +8,9 @@ import com.example.demo.repository.GarageRepository;
 import com.example.demo.repository.ServiceEntryRepository;
 import com.example.demo.repository.VehicleRepository;
 import com.example.demo.service.ServiceEntryService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -20,11 +20,10 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
     private final VehicleRepository vehicleRepository;
     private final GarageRepository garageRepository;
 
-    public ServiceEntryServiceImpl(
-            ServiceEntryRepository serviceEntryRepository,
-            VehicleRepository vehicleRepository,
-            GarageRepository garageRepository) {
-
+    // ✅ Constructor Injection
+    public ServiceEntryServiceImpl(ServiceEntryRepository serviceEntryRepository,
+                                  VehicleRepository vehicleRepository,
+                                  GarageRepository garageRepository) {
         this.serviceEntryRepository = serviceEntryRepository;
         this.vehicleRepository = vehicleRepository;
         this.garageRepository = garageRepository;
@@ -37,23 +36,27 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
                 .orElseThrow(() ->
                         new EntityNotFoundException("Vehicle not found"));
 
+        if (!Boolean.TRUE.equals(vehicle.getActive())) {
+            throw new IllegalArgumentException("Only active vehicles can receive service entries");
+        }
+
         Garage garage = garageRepository.findById(entry.getGarage().getId())
                 .orElseThrow(() ->
                         new EntityNotFoundException("Garage not found"));
 
-        if (!Boolean.TRUE.equals(vehicle.getActive())) {
-            throw new IllegalArgumentException("Only active vehicles can receive services");
+        if (!Boolean.TRUE.equals(garage.getActive())) {
+            throw new IllegalArgumentException("Only active garages can create service entries");
         }
 
-        if (entry.getServiceDate().isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("future");
+        if (entry.getServiceDate().after(new Date())) {
+            throw new IllegalArgumentException("Service date cannot be in the future");
         }
 
         serviceEntryRepository
                 .findTopByVehicleOrderByOdometerReadingDesc(vehicle)
-                .ifPresent(last -> {
-                    if (entry.getOdometerReading() < last.getOdometerReading()) {
-                        throw new IllegalArgumentException(">=");
+                .ifPresent(lastEntry -> {
+                    if (entry.getOdometerReading() < lastEntry.getOdometerReading()) {
+                        throw new IllegalArgumentException("Odometer reading must be >=");
                     }
                 });
 
@@ -64,7 +67,19 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
     }
 
     @Override
+    public ServiceEntry getServiceEntryById(Long id) {
+        return serviceEntryRepository.findById(id)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("ServiceEntry not found"));
+    }
+
+    @Override
     public List<ServiceEntry> getEntriesForVehicle(Long vehicleId) {
         return serviceEntryRepository.findByVehicleId(vehicleId);
+    }
+
+    @Override
+    public List<ServiceEntry> getEntriesByGarage(Long garageId) {
+        return serviceEntryRepository.findByGarageId(garageId);
     }
 }
