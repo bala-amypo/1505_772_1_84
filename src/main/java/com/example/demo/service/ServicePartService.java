@@ -1,17 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.model.Garage;
-import java.util.List;
+import com.example.demo.model.ServicePart;
 
-public interface GarageService {
+public interface ServicePartService {
 
-    Garage createGarage(Garage garage);
-
-    Garage updateGarage(Long id, Garage garage);
-
-    Garage getGarageById(Long id);
-
-    List<Garage> getAllGarages();
-
-    void deactivateGarage(Long id);
+    ServicePart createPart(ServicePart part);
 }
