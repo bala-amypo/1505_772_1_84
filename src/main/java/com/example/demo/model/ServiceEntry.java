@@ -1,7 +1,8 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -12,44 +13,52 @@ public class ServiceEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    // 🔗 Many service entries belong to one vehicle
+    @ManyToOne
     @JoinColumn(name = "vehicle_id", nullable = false)
     private Vehicle vehicle;
 
-    @ManyToOne(optional = false)
+    // 🔗 Many service entries belong to one garage
+    @ManyToOne
     @JoinColumn(name = "garage_id", nullable = false)
     private Garage garage;
 
-    @Column(nullable = false)
     private String serviceType;
 
-    @Column(nullable = false)
-    private LocalDate serviceDate;
+    @Temporal(TemporalType.DATE)
+    private Date serviceDate;
 
-    @Column(nullable = false)
     private Integer odometerReading;
 
-    @OneToMany(mappedBy = "serviceEntry", cascade = CascadeType.ALL, orphanRemoval = true)
+    private String description;
+
+    private Timestamp recordedAt = new Timestamp(System.currentTimeMillis());
+
+    // 🔗 One service entry → many parts
+    @OneToMany(mappedBy = "serviceEntry", cascade = CascadeType.ALL)
     private List<ServicePart> serviceParts;
 
+    // 🔗 One service entry → many verification logs
+    @OneToMany(mappedBy = "serviceEntry", cascade = CascadeType.ALL)
+    private List<VerificationLog> verificationLogs;
+
+    // ✅ Empty constructor
     public ServiceEntry() {
     }
 
-    public ServiceEntry(
-            Vehicle vehicle,
-            Garage garage,
-            String serviceType,
-            LocalDate serviceDate,
-            Integer odometerReading
-    ) {
+    // ✅ Parameterized constructor
+    public ServiceEntry(Vehicle vehicle, Garage garage, String serviceType,
+                        Date serviceDate, Integer odometerReading,
+                        String description) {
         this.vehicle = vehicle;
         this.garage = garage;
         this.serviceType = serviceType;
         this.serviceDate = serviceDate;
         this.odometerReading = odometerReading;
+        this.description = description;
     }
 
-    // Getters and setters
+    // Getters & Setters
 
     public Long getId() {
         return id;
@@ -79,11 +88,11 @@ public class ServiceEntry {
         this.serviceType = serviceType;
     }
 
-    public LocalDate getServiceDate() {
+    public Date getServiceDate() {
         return serviceDate;
     }
 
-    public void setServiceDate(LocalDate serviceDate) {
+    public void setServiceDate(Date serviceDate) {
         this.serviceDate = serviceDate;
     }
 
@@ -95,11 +104,15 @@ public class ServiceEntry {
         this.odometerReading = odometerReading;
     }
 
-    public List<ServicePart> getServiceParts() {
-        return serviceParts;
+    public String getDescription() {
+        return description;
     }
 
-    public void setServiceParts(List<ServicePart> serviceParts) {
-        this.serviceParts = serviceParts;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Timestamp getRecordedAt() {
+        return recordedAt;
     }
 }
