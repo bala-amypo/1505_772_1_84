@@ -21,7 +21,6 @@ public class VerificationLog {
     public VerificationLog() {
     }
 
-    // ✅ Parameterized constructor (verifiedAt optional)
     public VerificationLog(ServiceEntry serviceEntry) {
         this.serviceEntry = serviceEntry;
         this.verifiedAt = LocalDateTime.now();

@@ -4,5 +4,4 @@ import com.example.demo.model.ServicePart;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ServicePartRepository extends JpaRepository<ServicePart, Long> {
-    // No extra methods required as per specification
 }

@@ -12,13 +12,10 @@ import java.util.Optional;
 
 public interface ServiceEntryRepository extends JpaRepository<ServiceEntry, Long> {
 
-    // ✅ Latest odometer reading for a vehicle
     Optional<ServiceEntry> findTopByVehicleOrderByOdometerReadingDesc(Vehicle vehicle);
 
-    // ✅ All entries for a vehicle
     List<ServiceEntry> findByVehicleId(Long vehicleId);
 
-    // ✅ Entries for a garage with minimum odometer constraint
     @Query("""
            SELECT se FROM ServiceEntry se
            WHERE se.garage.id = :garageId
@@ -29,7 +26,6 @@ public interface ServiceEntryRepository extends JpaRepository<ServiceEntry, Long
             @Param("minOdometer") int minOdometer
     );
 
-    // ✅ Entries for a vehicle within date range
     @Query("""
            SELECT se FROM ServiceEntry se
            WHERE se.vehicle.id = :vehicleId

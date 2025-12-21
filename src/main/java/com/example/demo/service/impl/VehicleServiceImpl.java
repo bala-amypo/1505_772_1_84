@@ -13,12 +13,10 @@ public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
 
-    // ✅ Constructor-based DI
     public VehicleServiceImpl(VehicleRepository vehicleRepository) {
         this.vehicleRepository = vehicleRepository;
     }
 
-    // ✅ VIN uniqueness enforcement
     @Override
     public Vehicle createVehicle(Vehicle vehicle) {
         if (vehicleRepository.findByVin(vehicle.getVin()).isPresent()) {
@@ -27,7 +25,6 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
-    // ✅ Not-found behavior
     @Override
     public Vehicle getVehicleById(Long id) {
         return vehicleRepository.findById(id)
@@ -42,13 +39,11 @@ public class VehicleServiceImpl implements VehicleService {
                         new EntityNotFoundException("Vehicle not found"));
     }
 
-    // ✅ Retrieval by owner
     @Override
     public List<Vehicle> getVehiclesByOwner(Long ownerId) {
         return vehicleRepository.findByOwnerId(ownerId);
     }
 
-    // ✅ Deactivation rule
     @Override
     public void deactivateVehicle(Long id) {
         Vehicle vehicle = getVehicleById(id);

@@ -35,11 +35,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Long id, User user) {
-        // Ensure user exists
         User existing = getUserById(id);
 
-        // No field updates here because User fields are unknown / immutable
-        // This keeps compilation safe and logic correct
+
 
         return userRepository.save(existing);
     }

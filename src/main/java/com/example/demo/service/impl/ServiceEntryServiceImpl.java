@@ -20,7 +20,6 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
     private final VehicleRepository vehicleRepository;
     private final GarageRepository garageRepository;
 
-    // ✅ Constructor-based DI
     public ServiceEntryServiceImpl(
             ServiceEntryRepository serviceEntryRepository,
             VehicleRepository vehicleRepository,
@@ -34,27 +33,22 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
     @Override
     public ServiceEntry createServiceEntry(ServiceEntry entry) {
 
-        // ✅ Load Vehicle
         Vehicle vehicle = vehicleRepository.findById(entry.getVehicle().getId())
                 .orElseThrow(() ->
                         new EntityNotFoundException("Vehicle not found"));
 
-        // ✅ Load Garage
         Garage garage = garageRepository.findById(entry.getGarage().getId())
                 .orElseThrow(() ->
                         new EntityNotFoundException("Garage not found"));
 
-        // ✅ Reject inactive vehicle
         if (!Boolean.TRUE.equals(vehicle.getActive())) {
             throw new IllegalArgumentException("Only active vehicles can receive services");
         }
 
-        // ✅ Reject future date
         if (entry.getServiceDate().isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("future");
         }
 
-        // ✅ Odometer must be non-decreasing
         serviceEntryRepository
                 .findTopByVehicleOrderByOdometerReadingDesc(vehicle)
                 .ifPresent(last -> {

@@ -16,7 +16,6 @@ public class VerificationLogServiceImpl implements VerificationLogService {
     private final VerificationLogRepository logRepository;
     private final ServiceEntryRepository entryRepository;
 
-    // ✅ Constructor-based DI
     public VerificationLogServiceImpl(
             VerificationLogRepository logRepository,
             ServiceEntryRepository entryRepository) {
