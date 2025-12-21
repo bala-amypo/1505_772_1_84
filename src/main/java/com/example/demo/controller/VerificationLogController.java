@@ -2,11 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.model.VerificationLog;
 import com.example.demo.service.VerificationLogService;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/verification-logs") 
+@RequestMapping("/api/verification-logs")
 public class VerificationLogController {
 
     private final VerificationLogService verificationLogService;
@@ -16,7 +17,17 @@ public class VerificationLogController {
     }
 
     @PostMapping
-    public VerificationLog createLog(@Valid @RequestBody VerificationLog log) {
+    public VerificationLog createLog(@RequestBody VerificationLog log) {
         return verificationLogService.createLog(log);
+    }
+
+    @GetMapping("/{id}")
+    public VerificationLog getLog(@PathVariable Long id) {
+        return verificationLogService.getLogById(id);
+    }
+
+    @GetMapping("/entry/{entryId}")
+    public List<VerificationLog> getLogsForEntry(@PathVariable Long entryId) {
+        return verificationLogService.getLogsForEntry(entryId);
     }
 }
