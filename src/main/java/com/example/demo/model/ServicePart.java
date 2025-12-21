@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "service_parts")
@@ -10,12 +11,16 @@ public class ServicePart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "service_entry_id", nullable = false)
     private ServiceEntry serviceEntry;
 
     @Column(nullable = false)
     private String partName;
+
+    private String partNumber;
+
+    private BigDecimal cost;
 
     @Column(nullable = false)
     private Integer quantity;
@@ -23,12 +28,15 @@ public class ServicePart {
     public ServicePart() {
     }
 
-    public ServicePart(ServiceEntry serviceEntry, String partName, Integer quantity) {
+    public ServicePart(ServiceEntry serviceEntry, String partName,
+                       String partNumber, BigDecimal cost,
+                       Integer quantity) {
         this.serviceEntry = serviceEntry;
         this.partName = partName;
+        this.partNumber = partNumber;
+        this.cost = cost;
         this.quantity = quantity;
     }
-
 
     public Long getId() {
         return id;
@@ -48,6 +56,22 @@ public class ServicePart {
 
     public void setPartName(String partName) {
         this.partName = partName;
+    }
+
+    public String getPartNumber() {
+        return partNumber;
+    }
+
+    public void setPartNumber(String partNumber) {
+        this.partNumber = partNumber;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 
     public Integer getQuantity() {
