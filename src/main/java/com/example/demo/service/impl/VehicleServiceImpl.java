@@ -1,9 +1,8 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
+import com.example.demo.exception.EntityNotFoundException;
 import com.example.demo.model.Vehicle;
 import com.example.demo.repository.VehicleRepository;
-import com.example.demo.service.VehicleService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,15 +12,19 @@ public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
 
+    // Constructor Injection (MANDATORY)
     public VehicleServiceImpl(VehicleRepository vehicleRepository) {
         this.vehicleRepository = vehicleRepository;
     }
 
     @Override
     public Vehicle createVehicle(Vehicle vehicle) {
+
         if (vehicleRepository.findByVin(vehicle.getVin()).isPresent()) {
             throw new IllegalArgumentException("VIN already exists");
         }
+
+        vehicle.setActive(true);
         return vehicleRepository.save(vehicle);
     }
 

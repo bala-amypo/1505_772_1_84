@@ -1,12 +1,13 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
 @Table(
-    name = "vehicles",
-    uniqueConstraints = @UniqueConstraint(columnNames = "vin")
+        name = "vehicles",
+        uniqueConstraints = @UniqueConstraint(columnNames = "vin")
 )
 public class Vehicle {
 
@@ -17,35 +18,48 @@ public class Vehicle {
     @Column(nullable = false, unique = true)
     private String vin;
 
-    @Column(nullable = false)
     private String make;
 
-    @Column(nullable = false)
     private String model;
+
+    private Integer year;
 
     @Column(nullable = false)
     private Long ownerId;
 
-    @Column(nullable = false)
-    private Boolean active;
+    private Boolean active = true;
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Timestamp createdAt;
+
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     private List<ServiceEntry> serviceEntries;
 
+    // ✅ Empty constructor (required by JPA)
     public Vehicle() {
     }
 
-    public Vehicle(String vin, String make, String model, Long ownerId, Boolean active) {
+    // ✅ Parameterized constructor
+    public Vehicle(Long id, String vin, String make, String model,
+                   Integer year, Long ownerId, Boolean active,
+                   Timestamp createdAt) {
+        this.id = id;
         this.vin = vin;
         this.make = make;
         this.model = model;
+        this.year = year;
         this.ownerId = ownerId;
         this.active = active;
+        this.createdAt = createdAt;
     }
 
+    // ✅ Getters and Setters
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getVin() {
@@ -72,6 +86,14 @@ public class Vehicle {
         this.model = model;
     }
 
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
     public Long getOwnerId() {
         return ownerId;
     }
@@ -86,6 +108,14 @@ public class Vehicle {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
     public List<ServiceEntry> getServiceEntries() {
