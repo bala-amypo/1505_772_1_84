@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "verification_logs")
 public class VerificationLog {
 
     @Id
@@ -13,57 +14,21 @@ public class VerificationLog {
     @ManyToOne
     private ServiceEntry serviceEntry;
 
-    private Boolean verifiedBySystem;
-
-    private String notes;
-
     private LocalDateTime verifiedAt;
 
-    public VerificationLog() {
-    }
+    public VerificationLog() {}
 
-    @PrePersist
-    public void onCreate() {
-        this.verifiedAt = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public ServiceEntry getServiceEntry() {
-        return serviceEntry;
-    }
-
-    public void setServiceEntry(ServiceEntry serviceEntry) {
+    public VerificationLog(ServiceEntry serviceEntry) {
         this.serviceEntry = serviceEntry;
     }
 
-    public Boolean getVerifiedBySystem() {
-        return verifiedBySystem;
-    }
+    // getters/setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setVerifiedBySystem(Boolean verifiedBySystem) {
-        this.verifiedBySystem = verifiedBySystem;
-    }
+    public ServiceEntry getServiceEntry() { return serviceEntry; }
+    public void setServiceEntry(ServiceEntry serviceEntry) { this.serviceEntry = serviceEntry; }
 
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public LocalDateTime getVerifiedAt() {
-        return verifiedAt;
-    }
-
-    public void setVerifiedAt(LocalDateTime verifiedAt) {
-        this.verifiedAt = verifiedAt;
-    }
+    public LocalDateTime getVerifiedAt() { return verifiedAt; }
+    public void setVerifiedAt(LocalDateTime verifiedAt) { this.verifiedAt = verifiedAt; }
 }
