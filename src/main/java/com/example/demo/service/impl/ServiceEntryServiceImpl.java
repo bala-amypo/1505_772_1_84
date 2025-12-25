@@ -49,10 +49,6 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
     public List<ServiceEntry> getEntriesByGarage(Long garageId) {
         Garage garage = garageRepository.findById(garageId)
                 .orElseThrow(() -> new EntityNotFoundException("Garage not found"));
-        return serviceEntryRepository.findByGarageAndServiceDateBetween(
-                garage,
-                new java.util.Date(0),
-                new java.util.Date()
-        );
+        return serviceEntryRepository.findByGarage(garage);
     }
 }
