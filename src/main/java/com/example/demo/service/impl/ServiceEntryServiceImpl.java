@@ -10,6 +10,7 @@ import com.example.demo.service.ServiceEntryService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -49,6 +50,10 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
     public List<ServiceEntry> getEntriesByGarage(Long garageId) {
         Garage garage = garageRepository.findById(garageId)
                 .orElseThrow(() -> new EntityNotFoundException("Garage not found"));
-        return serviceEntryRepository.findByGarage(garage);
+        return serviceEntryRepository.findByGarageAndServiceDateBetween(
+                garage,
+                new Date(0),
+                new Date()
+        );
     }
 }

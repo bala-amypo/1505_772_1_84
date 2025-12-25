@@ -23,8 +23,6 @@ public class ServiceEntry {
 
     private Long odometerReading;
 
-    private String description;
-
     public ServiceEntry() {
     }
 
@@ -74,13 +72,5 @@ public class ServiceEntry {
 
     public void setOdometerReading(Long odometerReading) {
         this.odometerReading = odometerReading;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }
