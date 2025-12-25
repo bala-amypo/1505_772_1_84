@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 public class ServiceEntry {
@@ -18,10 +18,9 @@ public class ServiceEntry {
 
     private String serviceType;
 
-    @Temporal(TemporalType.DATE)
-    private Date serviceDate;
+    private LocalDate serviceDate;
 
-    private Long odometerReading;
+    private int odometerReading;
 
     public ServiceEntry() {
     }
@@ -58,19 +57,19 @@ public class ServiceEntry {
         this.serviceType = serviceType;
     }
 
-    public Date getServiceDate() {
+    public LocalDate getServiceDate() {
         return serviceDate;
     }
 
-    public void setServiceDate(Date serviceDate) {
+    public void setServiceDate(LocalDate serviceDate) {
         this.serviceDate = serviceDate;
     }
 
-    public Long getOdometerReading() {
+    public int getOdometerReading() {
         return odometerReading;
     }
 
-    public void setOdometerReading(Long odometerReading) {
+    public void setOdometerReading(int odometerReading) {
         this.odometerReading = odometerReading;
     }
 }
