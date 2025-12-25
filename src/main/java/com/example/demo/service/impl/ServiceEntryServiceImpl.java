@@ -39,15 +39,10 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
                 .orElseThrow(() -> new EntityNotFoundException("ServiceEntry not found"));
     }
 
-    public List<ServiceEntry> getServiceEntriesByVehicleAndDateRange(Long vehicleId, Date start, Date end) {
-        Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
-        return serviceEntryRepository.findByVehicleAndServiceDateBetween(vehicle, start, end);
-    }
-
-    public List<ServiceEntry> getServiceEntriesByGarageAndDateRange(Long garageId, Date start, Date end) {
+    @Override
+    public List<ServiceEntry> getEntriesByGarage(Long garageId) {
         Garage garage = garageRepository.findById(garageId)
                 .orElseThrow(() -> new EntityNotFoundException("Garage not found"));
-        return serviceEntryRepository.findByGarageAndServiceDateBetween(garage, start, end);
+        return serviceEntryRepository.findByGarageAndServiceDateBetween(garage, new Date(0), new Date());
     }
 }
