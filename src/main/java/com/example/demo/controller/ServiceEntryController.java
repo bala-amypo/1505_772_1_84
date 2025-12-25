@@ -2,28 +2,27 @@ package com.example.demo.controller;
 
 import com.example.demo.model.ServiceEntry;
 import com.example.demo.service.ServiceEntryService;
-import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/service-entries") 
+@RequestMapping("/api/service-entries")
 public class ServiceEntryController {
 
-    private final ServiceEntryService serviceEntryService;
+    private final ServiceEntryService service;
 
-    public ServiceEntryController(ServiceEntryService serviceEntryService) {
-        this.serviceEntryService = serviceEntryService;
+    public ServiceEntryController(ServiceEntryService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public ServiceEntry createServiceEntry(@Valid @RequestBody ServiceEntry entry) {
-        return serviceEntryService.createServiceEntry(entry);
+    public ServiceEntry create(@RequestBody ServiceEntry e) {
+        return service.createServiceEntry(e);
     }
 
     @GetMapping("/vehicle/{vehicleId}")
-    public List<ServiceEntry> getEntriesForVehicle(@PathVariable Long vehicleId) {
-        return serviceEntryService.getEntriesForVehicle(vehicleId);
+    public List<ServiceEntry> getByVehicle(@PathVariable Long vehicleId) {
+        return service.getEntriesForVehicle(vehicleId);
     }
 }

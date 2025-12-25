@@ -10,40 +10,29 @@ import java.util.List;
 @RequestMapping("/api/vehicles")
 public class VehicleController {
 
-    private final VehicleService vehicleService;
+    private final VehicleService service;
 
-    // Constructor Injection
-    public VehicleController(VehicleService vehicleService) {
-        this.vehicleService = vehicleService;
+    public VehicleController(VehicleService service) {
+        this.service = service;
     }
 
-    // CREATE VEHICLE
     @PostMapping
-    public Vehicle createVehicle(@RequestBody Vehicle vehicle) {
-        return vehicleService.createVehicle(vehicle);
+    public Vehicle create(@RequestBody Vehicle v) {
+        return service.createVehicle(v);
     }
 
-    // GET BY ID
     @GetMapping("/{id}")
-    public Vehicle getVehicleById(@PathVariable Long id) {
-        return vehicleService.getVehicleById(id);
+    public Vehicle get(@PathVariable Long id) {
+        return service.getVehicleById(id);
     }
 
-    // GET BY VIN
-    @GetMapping("/vin/{vin}")
-    public Vehicle getVehicleByVin(@PathVariable String vin) {
-        return vehicleService.getVehicleByVin(vin);
-    }
-
-    // GET BY OWNER
     @GetMapping("/owner/{ownerId}")
-    public List<Vehicle> getVehiclesByOwner(@PathVariable Long ownerId) {
-        return vehicleService.getVehiclesByOwner(ownerId);
+    public List<Vehicle> getByOwner(@PathVariable Long ownerId) {
+        return service.getVehiclesByOwner(ownerId);
     }
 
-    // DEACTIVATE VEHICLE
-    @PutMapping("/{id}/deactivate")
-    public void deactivateVehicle(@PathVariable Long id) {
-        vehicleService.deactivateVehicle(id);
+    @PostMapping("/{id}/deactivate")
+    public void deactivate(@PathVariable Long id) {
+        service.deactivateVehicle(id);
     }
 }

@@ -4,30 +4,18 @@ import com.example.demo.model.ServicePart;
 import com.example.demo.service.ServicePartService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/service-parts")
 public class ServicePartController {
 
-    private final ServicePartService servicePartService;
+    private final ServicePartService service;
 
-    public ServicePartController(ServicePartService servicePartService) {
-        this.servicePartService = servicePartService;
+    public ServicePartController(ServicePartService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public ServicePart createPart(@RequestBody ServicePart part) {
-        return servicePartService.createPart(part);
-    }
-
-    @GetMapping("/{id}")
-    public ServicePart getPart(@PathVariable Long id) {
-        return servicePartService.getPartById(id);
-    }
-
-    @GetMapping("/entry/{entryId}")
-    public List<ServicePart> getPartsForEntry(@PathVariable Long entryId) {
-        return servicePartService.getPartsForEntry(entryId);
+    public ServicePart create(@RequestBody ServicePart part) {
+        return service.createPart(part);
     }
 }
