@@ -6,18 +6,52 @@ import com.example.demo.service.VehicleService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class VehicleServiceImpl implements VehicleService {
 
-    private final VehicleRepository repo;
+    private final VehicleRepository vehicleRepository;
 
-    public VehicleServiceImpl(VehicleRepository repo) {
-        this.repo = repo;
+    public VehicleServiceImpl(VehicleRepository vehicleRepository) {
+        this.vehicleRepository = vehicleRepository;
+    }
+
+    @Override
+    public Vehicle createVehicle(Vehicle vehicle) {
+        if (vehicle.getVin() == null || vehicle.getVin().isEmpty()) {
+            throw new IllegalArgumentException("VIN is required");
+        }
+
+        if (vehicleRepository.findByVin(vehicle.getVin()).isPresent()) {
+            throw new IllegalArgumentException("VIN already exists");
+        }
+
+        vehicle.setActive(true);
+        return vehicleRepository.save(vehicle);
     }
 
     @Override
     public Vehicle getVehicleById(Long id) {
-        return repo.findById(id)
+        return vehicleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
+    }
+
+    @Override
+    public Vehicle getVehicleByVin(String vin) {
+        return vehicleRepository.findByVin(vin)
+                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
+    }
+
+    @Override
+    public List<Vehicle> getVehiclesByOwner(Long ownerId) {
+        return vehicleRepository.findByOwnerId(ownerId);
+    }
+
+    @Override
+    public void deactivateVehicle(Long id) {
+        Vehicle vehicle = getVehicleById(id);
+        vehicle.setActive(false);
+        vehicleRepository.save(vehicle);
     }
 }
