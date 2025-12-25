@@ -4,41 +4,18 @@ import com.example.demo.model.Garage;
 import com.example.demo.service.GarageService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/garages")
 public class GarageController {
 
-    private final GarageService garageService;
+    private final GarageService service;
 
-    public GarageController(GarageService garageService) {
-        this.garageService = garageService;
+    public GarageController(GarageService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public Garage createGarage(@RequestBody Garage garage) {
-        return garageService.createGarage(garage);
-    }
-
-    @PutMapping("/{id}")
-    public Garage updateGarage(@PathVariable Long id,
-                               @RequestBody Garage garage) {
-        return garageService.updateGarage(id, garage);
-    }
-
-    @GetMapping("/{id}")
-    public Garage getGarage(@PathVariable Long id) {
-        return garageService.getGarageById(id);
-    }
-
-    @GetMapping
-    public List<Garage> getAllGarages() {
-        return garageService.getAllGarages();
-    }
-
-    @PutMapping("/{id}/deactivate")
-    public void deactivateGarage(@PathVariable Long id) {
-        garageService.deactivateGarage(id);
+    public Garage create(@RequestBody Garage garage) {
+        return service.createGarage(garage);
     }
 }
