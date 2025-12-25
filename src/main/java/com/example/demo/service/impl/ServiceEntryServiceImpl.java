@@ -33,7 +33,7 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
     }
 
     @Override
-    public ServiceEntry getServiceEntry(Long id) {
+    public ServiceEntry getServiceEntryById(Long id) {
         return serviceEntryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("ServiceEntry not found"));
     }
@@ -49,6 +49,10 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
     public List<ServiceEntry> getEntriesByGarage(Long garageId) {
         Garage garage = garageRepository.findById(garageId)
                 .orElseThrow(() -> new EntityNotFoundException("Garage not found"));
-        return serviceEntryRepository.findByGarageAndServiceDateBetween(garage, new java.util.Date(0), new java.util.Date());
+        return serviceEntryRepository.findByGarageAndServiceDateBetween(
+                garage,
+                new java.util.Date(0),
+                new java.util.Date()
+        );
     }
 }
