@@ -24,6 +24,20 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String generateToken(String email, String role, Long id) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + validity);
+
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("role", role)
+                .claim("id", id)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+
     public String getEmailFromToken(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }

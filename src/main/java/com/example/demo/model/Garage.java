@@ -1,20 +1,15 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(
-        name = "garages",
-        uniqueConstraints = @UniqueConstraint(columnNames = "garageName")
-)
 public class Garage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String garageName;
 
     private String address;
@@ -23,15 +18,10 @@ public class Garage {
 
     private Boolean active = true;
 
-    @OneToMany(mappedBy = "garage", cascade = CascadeType.ALL)
-    private List<ServiceEntry> serviceEntries;
-
     public Garage() {
     }
 
-    public Garage(Long id, String garageName, String address,
-                  String contactNumber, Boolean active) {
-        this.id = id;
+    public Garage(String garageName, String address, String contactNumber, Boolean active) {
         this.garageName = garageName;
         this.address = address;
         this.contactNumber = contactNumber;
@@ -40,6 +30,10 @@ public class Garage {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getGarageName() {
@@ -72,9 +66,5 @@ public class Garage {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public List<ServiceEntry> getServiceEntries() {
-        return serviceEntries;
     }
 }

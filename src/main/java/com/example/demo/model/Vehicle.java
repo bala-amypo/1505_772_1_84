@@ -1,58 +1,35 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
-import java.util.List;
 
 @Entity
-@Table(
-        name = "vehicles",
-        uniqueConstraints = @UniqueConstraint(columnNames = "vin")
-)
 public class Vehicle {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String vin;
 
     private String make;
 
     private String model;
 
-    private Integer year;
-
-    @Column(nullable = false)
     private Long ownerId;
 
     private Boolean active = true;
 
-    private Timestamp createdAt;
-
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    private List<ServiceEntry> serviceEntries;
-
-    // ✅ Empty constructor (required by JPA)
     public Vehicle() {
     }
 
-    // ✅ Parameterized constructor
-    public Vehicle(Long id, String vin, String make, String model,
-                   Integer year, Long ownerId, Boolean active,
-                   Timestamp createdAt) {
-        this.id = id;
+    public Vehicle(String vin, String make, String model, Long ownerId, Boolean active) {
         this.vin = vin;
         this.make = make;
         this.model = model;
-        this.year = year;
         this.ownerId = ownerId;
         this.active = active;
-        this.createdAt = createdAt;
     }
-
-    // ✅ Getters and Setters
 
     public Long getId() {
         return id;
@@ -86,14 +63,6 @@ public class Vehicle {
         this.model = model;
     }
 
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
-    }
-
     public Long getOwnerId() {
         return ownerId;
     }
@@ -108,21 +77,5 @@ public class Vehicle {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public List<ServiceEntry> getServiceEntries() {
-        return serviceEntries;
-    }
-
-    public void setServiceEntries(List<ServiceEntry> serviceEntries) {
-        this.serviceEntries = serviceEntries;
     }
 }
