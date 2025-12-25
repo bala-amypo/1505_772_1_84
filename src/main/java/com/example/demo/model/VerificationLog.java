@@ -1,10 +1,9 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "verification_logs")
 public class VerificationLog {
 
     @Id
@@ -12,27 +11,28 @@ public class VerificationLog {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "service_entry_id", nullable = false)
     private ServiceEntry serviceEntry;
 
-    private Timestamp verifiedAt = new Timestamp(System.currentTimeMillis());
-
-    private Boolean verifiedBySystem = true;
+    private Boolean verifiedBySystem;
 
     private String notes;
+
+    private LocalDateTime verifiedAt;
 
     public VerificationLog() {
     }
 
-    public VerificationLog(ServiceEntry serviceEntry, Boolean verifiedBySystem, String notes) {
-        this.serviceEntry = serviceEntry;
-        this.verifiedBySystem = verifiedBySystem;
-        this.notes = notes;
-        this.verifiedAt = new Timestamp(System.currentTimeMillis());
+    @PrePersist
+    public void onCreate() {
+        this.verifiedAt = LocalDateTime.now();
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public ServiceEntry getServiceEntry() {
@@ -41,10 +41,6 @@ public class VerificationLog {
 
     public void setServiceEntry(ServiceEntry serviceEntry) {
         this.serviceEntry = serviceEntry;
-    }
-
-    public Timestamp getVerifiedAt() {
-        return verifiedAt;
     }
 
     public Boolean getVerifiedBySystem() {
@@ -61,5 +57,13 @@ public class VerificationLog {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public LocalDateTime getVerifiedAt() {
+        return verifiedAt;
+    }
+
+    public void setVerifiedAt(LocalDateTime verifiedAt) {
+        this.verifiedAt = verifiedAt;
     }
 }
