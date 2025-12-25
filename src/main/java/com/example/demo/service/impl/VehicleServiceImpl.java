@@ -19,14 +19,9 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Vehicle createVehicle(Vehicle vehicle) {
-        if (vehicle.getVin() == null || vehicle.getVin().isEmpty()) {
-            throw new IllegalArgumentException("VIN is required");
-        }
-
         if (vehicleRepository.findByVin(vehicle.getVin()).isPresent()) {
             throw new IllegalArgumentException("VIN already exists");
         }
-
         vehicle.setActive(true);
         return vehicleRepository.save(vehicle);
     }
@@ -50,8 +45,8 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void deactivateVehicle(Long id) {
-        Vehicle vehicle = getVehicleById(id);
-        vehicle.setActive(false);
-        vehicleRepository.save(vehicle);
+        Vehicle v = getVehicleById(id);
+        v.setActive(false);
+        vehicleRepository.save(v);
     }
 }
