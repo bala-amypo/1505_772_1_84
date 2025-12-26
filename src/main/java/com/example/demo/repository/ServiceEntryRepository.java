@@ -16,12 +16,10 @@ public interface ServiceEntryRepository extends JpaRepository<ServiceEntry, Long
 
     List<ServiceEntry> findByVehicleId(Long vehicleId);
 
-    // Required by TestNG
     @Query("SELECT s FROM ServiceEntry s WHERE s.garage.id = :garageId AND s.odometerReading >= :minOdometer")
     List<ServiceEntry> findByGarageAndMinOdometer(@Param("garageId") Long garageId,
                                                   @Param("minOdometer") int minOdometer);
 
-    // Required by TestNG
     @Query("SELECT s FROM ServiceEntry s WHERE s.vehicle.id = :vehicleId AND s.serviceDate BETWEEN :from AND :to")
     List<ServiceEntry> findByVehicleAndDateRange(@Param("vehicleId") Long vehicleId,
                                                  @Param("from") LocalDate from,
