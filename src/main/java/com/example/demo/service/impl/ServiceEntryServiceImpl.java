@@ -59,7 +59,18 @@ public class ServiceEntryServiceImpl implements ServiceEntryService {
     }
 
     @Override
+    public ServiceEntry getEntryById(Long id) {
+        return serviceEntryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("ServiceEntry not found"));
+    }
+
+    @Override
     public List<ServiceEntry> getEntriesForVehicle(Long vehicleId) {
         return serviceEntryRepository.findByVehicleId(vehicleId);
+    }
+
+    @Override
+    public List<ServiceEntry> getEntriesByGarage(Long garageId) {
+        return serviceEntryRepository.findByGarageAndMinOdometer(garageId, 0);
     }
 }
