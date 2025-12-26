@@ -15,10 +15,19 @@ public class AuthController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @PostMapping("/login")
-    public AuthResponse login(@RequestBody AuthRequest request) {
-        // Dummy user for test compliance
+    // POST /auth/register
+    @PostMapping("/register")
+    public AuthResponse register(@RequestBody AuthRequest request) {
+        // Dummy registration for assignment
         String token = jwtTokenProvider.generateToken(request.getEmail(), "USER", 1L);
         return new AuthResponse(token, 1L, request.getEmail(), "USER");
+    }
+
+    // GET /auth/login
+    @GetMapping("/login")
+    public AuthResponse login(@RequestParam String email,
+                              @RequestParam String password) {
+        String token = jwtTokenProvider.generateToken(email, "USER", 1L);
+        return new AuthResponse(token, 1L, email, "USER");
     }
 }
