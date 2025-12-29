@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-            jwtTokenProvider.validateToken(token);   // TestNG mocks this
+            jwtTokenProvider.validateToken(token);   
         }
 
         filterChain.doFilter(request, response);
