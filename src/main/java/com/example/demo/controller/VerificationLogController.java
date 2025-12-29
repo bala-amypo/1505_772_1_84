@@ -16,19 +16,16 @@ public class VerificationLogController {
         this.service = service;
     }
 
-    // POST /api/verification-logs
     @PostMapping
     public VerificationLog create(@RequestBody VerificationLog log) {
         return service.createLog(log);
     }
 
-    // GET /api/verification-logs/{id}
     @GetMapping("/{id}")
     public VerificationLog getById(@PathVariable Long id) {
         return service.getLogById(id);
     }
 
-    // GET /api/verification-logs/entry/{entryId}
     @GetMapping("/entry/{entryId}")
     public List<VerificationLog> getByEntry(@PathVariable Long entryId) {
         return service.getLogsByServiceEntry(entryId);

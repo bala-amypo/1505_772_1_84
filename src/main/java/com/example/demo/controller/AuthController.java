@@ -15,7 +15,7 @@ public class AuthController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    // POST /auth/register
+
     @PostMapping("/register")
     public AuthResponse register(@RequestBody AuthRequest request) {
         // Dummy registration for assignment
@@ -23,7 +23,6 @@ public class AuthController {
         return new AuthResponse(token, 1L, request.getEmail(), "USER");
     }
 
-    // GET /auth/login
     @GetMapping("/login")
     public AuthResponse login(@RequestParam String email,
                               @RequestParam String password) {
